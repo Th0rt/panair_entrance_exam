@@ -75,8 +75,11 @@ WSGI_APPLICATION = 'panair_entrance_exam.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'panair_entrance_exam',
+        'USER': 'root',
+        'HOST': 'localhost',
+        'PORT': '3306'
     }
 }
 
