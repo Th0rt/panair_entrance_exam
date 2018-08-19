@@ -1,5 +1,7 @@
 from django.shortcuts import render
+from django.shortcuts import redirect
 from .models import User
+from .forms import UserForm
 
 
 def index(request):
@@ -15,4 +17,11 @@ def user_show(request, id):
     return render(request, 'app/users/show.html', {'user': user})
 
 def user_new(request):
-    return render(request, 'app/users/new.html')
+    if request.method == 'POST':
+        new_user = UserForm(request.POST)
+        if new_user.is_valid():
+            new_user.save()
+            return redirect('app:users')
+    else:
+        form = UserForm()
+    return render(request, 'app/users/new.html', {'form': form})
