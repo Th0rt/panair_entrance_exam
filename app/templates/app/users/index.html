@@ -2,7 +2,7 @@
 
 {% block content %}
 <h1>顧客管理</h1>
-<a class="btn btn-primary" href="/users/new">新規作成</a>
+<a class="btn btn-primary" href="{% url 'app:user_new' %}">新規作成</a>
 <table class="table">
   <thead>
     <th>ID</th>
