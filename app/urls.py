@@ -5,5 +5,6 @@ app_name = 'app'
 
 urlpatterns = [
     path('', views.index, name='index'),
-    path('users', views.users_index, name='users')
+    path('users', views.users_index, name='users'),
+    path('users/<int:id>', views.users_show)
 ]
