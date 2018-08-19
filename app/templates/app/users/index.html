@@ -1,20 +1,25 @@
+{% extends "app/base.html" %}
+
 {% block content %}
 <h1>顧客管理</h1>
-<table>
-  <tr>
+<table class="table">
+  <thead>
     <th>ID</th>
     <th>名前</th>
     <th>性別</th>
-    <th>年齢<th>
-  </tr>
+    <th>年齢</th>
+    <th></th>
+  </thead>
   {% for user in users %}
-    <tr>
-      <td>{{ user.id }}</td>
-      <td>{{ user.name }}</td>
-      <td>{{ user.get_sex_display }}</td>
-      <td>{{ user.age }}</td>
-      <td><a href="{% url 'app:users' %}">編集</a></td>
-    </tr>
+    <tbody>
+      <tr>
+        <td>{{ user.id }}</td>
+        <td>{{ user.name }}</td>
+        <td>{{ user.get_sex_display }}</td>
+        <td>{{ user.age }}</td>
+        <td><a href="/users/{{ user.id }}">編集</a></td>
+      </tr>
+    </tbody>
   {% endfor %}
 </table>
 {% endblock content %}
