@@ -1,12 +1,20 @@
-<html>
-
-<head>
-  <title>app</title>
-</head>
-
-<body>
-  <div>a</div>
-  {% for user in users %} {{ user.name }} {% endfor %}
-</body>
-
-</html>
+{% block content %}
+<h1>顧客管理</h1>
+<table>
+  <tr>
+    <th>ID</th>
+    <th>名前</th>
+    <th>性別</th>
+    <th>年齢<th>
+  </tr>
+  {% for user in users %}
+    <tr>
+      <td>{{ user.id }}</td>
+      <td>{{ user.name }}</td>
+      <td>{{ user.get_sex_display }}</td>
+      <td>{{ user.age }}</td>
+      <td><a href="{% url 'app:users' %}">編集</a></td>
+    </tr>
+  {% endfor %}
+</table>
+{% endblock content %}
