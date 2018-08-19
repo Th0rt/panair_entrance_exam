@@ -1,11 +1,17 @@
-<html>
+{% extends "app/base.html" %}
 
-<head>
-  <title>app</title>
-</head>
-
-<body>
-  <p>Hello World!</p>
-</body>
-
-</html>
+{% block content %}
+  <h1>メニュー</h1>
+  <div>
+    <a href="#">顧客一覧</a>
+  </div>
+  <div>
+    <a href="#">レッスン受講記録</a>
+  </div>
+  <div>
+    <a href="#">月別請求一覧</a>
+  </div>
+  <div>
+    <a href="#">レポート</a>
+  </div>
+{% endblock content %}
