@@ -7,9 +7,11 @@
   <table class="table">
     <thead>
       <th>ID</th>
-      <th>名前</th>
-      <th>性別</th>
-      <th>年齢</th>
+      <th>受講者</th>
+      <th>ジャンル</th>
+      <th>受講日</th>
+      <th>受講時間</th>
+      <th>支払い金額</th>
       <th></th>
     </thead>
     {% for lesson in lessons %}
@@ -17,8 +19,10 @@
         <tr>
           <td>{{ lesson.user.id }}</td>
           <td>{{ lesson.user.name }}</td>
-          <td>{{ lesson.user.get_sex_display }}</td>
-          <td>{{ lesson.user.age }}</td>
+          <td>{{ lesson.curriculum.name }}</td>
+          <td>{{ lesson.created_at|date:"Y年 n月 j日"}}</td>
+          <td>{{ lesson.time }} h</td>
+          <td>{{ lesson.total_charge }} 円</td>
           <td><a href="{% url 'app:user_edit' id=user.id %}">編集</a></td>
         </tr>
       </tbody>
