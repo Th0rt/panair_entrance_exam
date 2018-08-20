@@ -25,3 +25,6 @@ def user_new(request):
     else:
         form = UserForm()
     return render(request, 'app/users/new.html', {'form': form})
+
+def lessons_index(request):
+    return render(request, 'app/lessons/index.html')
