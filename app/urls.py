@@ -12,5 +12,7 @@ urlpatterns = [
 
     path('lessons',          views.lessons_index, name='lessons'),
     path('lessons/new',      views.lessons_new,   name='lessons_new'),
-    path('lessons/<int:id>', views.lessons_edit,  name='lessons_edit')
+    path('lessons/<int:id>', views.lessons_edit,  name='lessons_edit'),
+
+    path('invoices',         views.invoices_index, name='invoices')
 ]

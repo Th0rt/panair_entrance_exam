@@ -34,3 +34,6 @@ def lessons_new(request):
 
 def lessons_edit(request, id):
     return render(request, 'app/lessons/edit.html')
+
+def invoices_index(request):
+    return render(request, 'app/invoices/index.html')
