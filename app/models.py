@@ -20,6 +20,6 @@ class User(models.Model):
 
 class Lesson(models.Model):
     user       = models.ForeignKey(User, on_delete=models.CASCADE)
-    carriculum = models.ForeignKey(Curriculum, on_delete=models.CASCADE)
+    curriculum = models.ForeignKey(Curriculum, on_delete=models.CASCADE)
     time       = models.IntegerField()
     created_at = models.DateTimeField(default=timezone.now)
