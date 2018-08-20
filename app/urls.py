@@ -10,5 +10,7 @@ urlpatterns = [
     path('users/<int:id>', views.user_show,     name='user_show'),
     path('users/new',      views.user_new,      name='user_new'),
 
-    path('lessons',        views.lessons_index, name='lessons')
+    path('lessons',          views.lessons_index, name='lessons'),
+    path('lessons/new',      views.lessons_new,   name='lessons_new'),
+    path('lessons/<int:id>', views.lessons_edit,  name='lessons_edit')
 ]

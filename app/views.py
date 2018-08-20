@@ -35,3 +35,9 @@ def user_new(request):
 
 def lessons_index(request):
     return render(request, 'app/lessons/index.html')
+
+def lessons_new(request):
+    return render(request, 'app/lessons/edit.html')
+
+def lessons_edit(request, id):
+    return render(request, 'app/lessons/edit.html')
