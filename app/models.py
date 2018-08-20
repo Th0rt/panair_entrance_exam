@@ -23,3 +23,9 @@ class Lesson(models.Model):
     curriculum = models.ForeignKey(Curriculum, on_delete=models.CASCADE)
     time       = models.IntegerField()
     created_at = models.DateTimeField(default=timezone.now)
+
+    def metered_charge(self):
+        return self.curriculum.metered_charge * self.time
+
+    def total_charge(self):
+        return self.curriculum.basic_charge + self.metered_charge()
