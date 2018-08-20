@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.shortcuts import redirect
 from .models import User
+from .models import Lesson
 from .forms import UserForm
 
 
@@ -34,7 +35,8 @@ def user_new(request):
     return render(request, 'app/users/new.html', {'form': form})
 
 def lessons_index(request):
-    return render(request, 'app/lessons/index.html')
+    lessons = Lesson.objects.all()
+    return render(request, 'app/lessons/index.html', {'lessons': lessons})
 
 def lessons_new(request):
     return render(request, 'app/lessons/edit.html')
