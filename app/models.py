@@ -12,11 +12,11 @@ class Curriculum(models.Model):
 
 class User(models.Model):
     SEXES_CHOICE = ((1, '男性'), (2, '女性'))
-    name       = models.CharField(max_length=50)
-    age        = models.IntegerField()
-    sex        = models.IntegerField(choices=SEXES_CHOICE, default=1)
-    lessons    = models.ManyToManyField(Curriculum, through='Lesson')
-    created_at = models.DateTimeField(default=timezone.now)
+    name        = models.CharField(max_length=50)
+    age         = models.IntegerField()
+    sex         = models.IntegerField(choices=SEXES_CHOICE, default=1)
+    curriculums = models.ManyToManyField(Curriculum, through='Lesson')
+    created_at  = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
         return self.name
