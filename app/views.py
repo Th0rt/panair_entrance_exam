@@ -1,13 +1,14 @@
+import datetime
 from django.shortcuts import render
 from django.shortcuts import redirect
-from .models import User
-from .models import Lesson
+from .models import User, Lesson, Curriculum, Invoice
 from .forms import UserForm, LessonForm
 
 
 def index(request):
-    return render(request, 'app/index.html', {})
-
+    year = datetime.datetime.now().strftime('%Y')
+    month = datetime.datetime.now().strftime('%m')
+    return render(request, 'app/index.html', {'year': year, 'month': month})
 
 def users_index(request):
     users = User.objects.all()
@@ -59,5 +60,7 @@ def lessons_edit(request, id):
         form = LessonForm(instance = lesson)
     return render(request, 'app/lessons/edit.html', { 'form': form })
 
-def invoices_index(request):
-    return render(request, 'app/invoices/index.html')
+def invoices_index(request, year, month):
+    invoices = [ Invoice(user, year, month) for user in User.objects.all() ]
+    return render(request, 'app/invoices/index.html', {'invoices': invoices })
+

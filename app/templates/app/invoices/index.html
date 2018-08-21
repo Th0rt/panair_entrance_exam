@@ -3,5 +3,25 @@
 
 {% block content %}
   <h1>請求一覧</h1>
+  <table class="table">
+    <thead>
+      <th>ID</th>
+      <th>受講者</th>
+      <th>ジャンル</th>
+      <th>合計レッスン数</th>
+      <th>請求額</th>
+    </thead>
+    {% for invoice in invoices %}
+      <tbody>
+        <tr>
+          <td>{{ invoice.user.id }}</td>
+          <td>{{ invoice.user.name }}</td>
+          <td>{{ invoice.curriculum_list| join:', ' }}</td>
+          <td>{{ invoice.lessons.count }}</td>
+          <td>{{ invoice.charge }}</td>
+        </tr>
+      </tbody>
+    {% endfor %}
+  </table>
 
 {% endblock content %}
