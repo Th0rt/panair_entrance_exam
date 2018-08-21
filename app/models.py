@@ -18,6 +18,9 @@ class User(models.Model):
     lessons    = models.ManyToManyField(Curriculum, through='Lesson')
     created_at = models.DateTimeField(default=timezone.now)
 
+    def __str__(self):
+        return self.name
+
 class Lesson(models.Model):
     user       = models.ForeignKey(User, on_delete=models.CASCADE)
     curriculum = models.ForeignKey(Curriculum, on_delete=models.CASCADE)
