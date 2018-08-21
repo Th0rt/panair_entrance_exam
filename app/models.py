@@ -21,6 +21,13 @@ class User(models.Model):
     def __str__(self):
         return self.name
 
+    def monthly_charge(self, year, month):
+        charge = 0
+        for lesson in self.lesson_set.filter(created_at__year  = year,
+                                             created_at__month = month):
+            charge += lesson.total_charge()
+        return charge
+
 class Lesson(models.Model):
     user       = models.ForeignKey(User, on_delete=models.CASCADE)
     curriculum = models.ForeignKey(Curriculum, on_delete=models.CASCADE)
