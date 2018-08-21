@@ -23,7 +23,7 @@
           <td>{{ lesson.created_at|date:"Y年 n月 j日"}}</td>
           <td>{{ lesson.time }} h</td>
           <td>{{ lesson.total_charge }} 円</td>
-          <td><a href="{% url 'app:user_edit' id=user.id %}">編集</a></td>
+          <td><a href="{% url 'app:lessons_edit' id=lesson.id %}">編集</a></td>
         </tr>
       </tbody>
     {% endfor %}

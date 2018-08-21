@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.shortcuts import redirect
 from .models import User
 from .models import Lesson
-from .forms import UserForm
+from .forms import UserForm, LessonForm
 
 
 def index(request):
@@ -39,10 +39,25 @@ def lessons_index(request):
     return render(request, 'app/lessons/index.html', {'lessons': lessons})
 
 def lessons_new(request):
-    return render(request, 'app/lessons/edit.html')
+    if request.method == 'POST':
+        new_lesson = LessonForm(request.POST)
+        if new_lesson.is_valid():
+            new_lesson.save()
+            return redirect('app:lessons')
+    else:
+        form = LessonForm()
+    return render(request, 'app/lessons/edit.html', { 'form' : form })
 
 def lessons_edit(request, id):
-    return render(request, 'app/lessons/edit.html')
+    lesson = Lesson.objects.get(id=id)
+    if request.method == 'POST':
+        edit_lesson = LessonForm(request.POST, instance = lesson)
+        if edit_lesson.is_valid():
+            edit_lesson.save()
+            return redirect('app:lessons')
+    else:
+        form = LessonForm(instance = lesson)
+    return render(request, 'app/lessons/edit.html', { 'form': form })
 
 def invoices_index(request):
     return render(request, 'app/invoices/index.html')
