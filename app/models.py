@@ -20,7 +20,7 @@ class User(models.Model):
 
     def __str__(self):
         return self.name
-        
+
 class Lesson(models.Model):
     user       = models.ForeignKey(User, on_delete=models.CASCADE)
     curriculum = models.ForeignKey(Curriculum, on_delete=models.CASCADE)
