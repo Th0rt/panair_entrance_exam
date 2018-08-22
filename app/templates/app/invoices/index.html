@@ -1,8 +1,16 @@
 
 {% extends "app/base.html" %}
+{% load staticfiles humanize %}
+
+{% block script %}
+  <script src="{% static 'js/main.js' %}"></script>
+{% endblock script %}
 
 {% block content %}
   <h1>請求一覧</h1>
+  <select id="link_to_past_month">
+    <option value="">--- 月を選んでください ---</option>
+  </select>
   <table class="table">
     <thead>
       <th>ID</th>
@@ -18,10 +26,11 @@
           <td>{{ invoice.user.name }}</td>
           <td>{{ invoice.curriculum_list| join:', ' }}</td>
           <td>{{ invoice.lessons.count }}</td>
-          <td>{{ invoice.charge }}</td>
+          <td>¥ {{ invoice.charge|intcomma }}</td>
         </tr>
       </tbody>
     {% endfor %}
   </table>
+<a class="btn btn-info" href="{% url 'app:index' %}" >トップ</a>
 
 {% endblock content %}
