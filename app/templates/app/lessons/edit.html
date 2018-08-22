@@ -1,0 +1,10 @@
+{% extends "app/base.html" %}
+
+{% block content %}
+  <h1>レッスン受講記録登録</h1>
+  <form method="POST">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-primary">登録</button>
+  </form>
+{% endblock content %}
