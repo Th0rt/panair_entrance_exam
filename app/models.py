@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models import Sum
 from django.utils import timezone
 
 class Curriculum(models.Model):
@@ -25,20 +26,22 @@ class Lesson(models.Model):
     user       = models.ForeignKey(User, on_delete=models.CASCADE)
     curriculum = models.ForeignKey(Curriculum, on_delete=models.CASCADE)
     time       = models.IntegerField()
+    charge     = models.IntegerField(null=True)
     created_at = models.DateTimeField(default=timezone.now)
 
-    def metered_charge(self):
-        return self.curriculum.metered_charge * self.time
+    def save(self):
+        self.charge = self.calc_charge()
+        super(Lesson, self).save()
 
-    def total_charge(self):
-        return self.curriculum.basic_charge + self.metered_charge()
+    def calc_charge(self):
+        charge = self.curriculum.basic_charge + (self.curriculum.metered_charge * self.time)
+        return charge
 
 class Invoice:
 
     def __init__(self, user, year, month):
         self.user = user
         self.lessons = user.lesson_set.filter(created_at__year = year, created_at__month = month)
-        self.charge = sum([lesson.total_charge() for lesson in self.lessons])
 
     @property
     def curriculum_list(self):
@@ -48,3 +51,10 @@ class Invoice:
                 curriulum_list.append(lesson.curriculum.name)
         return curriulum_list
 
+    @property
+    def charge(self):
+        if self.lessons.count() != 0:
+            return self.lessons.aggregate(Sum('charge'))['charge__sum']
+        else:
+            return 0
+        
