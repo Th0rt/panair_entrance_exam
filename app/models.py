@@ -57,6 +57,4 @@ class Invoice:
             return self.lessons.aggregate(Sum('charge'))['charge__sum']
         else:
             return 0
-
-
-
+        
