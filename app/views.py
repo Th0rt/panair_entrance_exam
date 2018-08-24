@@ -66,6 +66,7 @@ def invoices_index(request, year, month):
     return render(request, 'app/invoices/index.html', {'invoices': invoices })
 
 def reports_index(request, year, month):
+    # レコードがない場合は0ではなく省略されるのでannotateは使えない
     report_by_sex = []
 
     for curriculum in Curriculum.objects.all():
