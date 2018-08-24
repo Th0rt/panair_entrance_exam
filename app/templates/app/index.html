@@ -12,6 +12,6 @@
     <a href="{% url 'app:invoices' year=year month=month %}">月別請求一覧</a>
   </div>
   <div>
-    <a href="#">レポート</a>
+    <a href="{% url 'app:reports' year=year month=month %}">レポート</a>
   </div>
 {% endblock content %}

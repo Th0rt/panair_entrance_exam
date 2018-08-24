@@ -1,6 +1,7 @@
 import datetime
 from django.shortcuts import render
 from django.shortcuts import redirect
+from django.db.models import Sum, Count
 from .models import User, Lesson, Curriculum, Invoice
 from .forms import UserForm, LessonForm
 
@@ -63,4 +64,50 @@ def lessons_edit(request, id):
 def invoices_index(request, year, month):
     invoices = [ Invoice(user, year, month) for user in User.objects.all() ]
     return render(request, 'app/invoices/index.html', {'invoices': invoices })
+
+def reports_index(request, year, month):
+    report_by_sex = []
+
+    for curriculum in Curriculum.objects.all():
+        for i in [1,2]:
+            reportline = {
+                'curriculum__name' : curriculum.name,
+                'user__sex': i
+            }
+            reportline.update(
+                Lesson.objects.filter(
+                    curriculum__name = curriculum.name,
+                    user__sex = i
+                ).aggregate(
+                    Count('id'),
+                    Count('user', distinct = True),
+                    Sum('charge'),
+                )
+            )
+            report_by_sex.append(reportline)
+
+    report_by_generation = []
+    for curriculum in Curriculum.objects.all():
+        for i in [1,2]:
+            for generation in [10, 20, 30, 40, 50, 60, 70, 80]:
+                reportline = {
+                    'curriculum__name' : curriculum.name,
+                    'user__sex': i,
+                    'user__generation': generation,
+                }
+                reportline.update(
+                    Lesson.objects.filter(
+                        curriculum__name = curriculum.name,
+                        user__sex = i,
+                        user__generation = generation,
+                    ).aggregate(
+                        Count('id'),
+                        Count('user', distinct = True),
+                        Sum('charge'),
+                    )
+                )
+                report_by_generation.append(reportline)
+    return render(request, 'app/reports/index.html',
+                  { 'report_by_sex': report_by_sex,
+                    'report_by_generation': report_by_generation })
 

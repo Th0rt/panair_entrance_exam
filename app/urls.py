@@ -14,5 +14,7 @@ urlpatterns = [
     path('lessons/new',      views.lessons_new,   name='lessons_new'),
     path('lessons/<int:id>', views.lessons_edit,  name='lessons_edit'),
 
-    path('invoices/<int:year>/<int:month>', views.invoices_index, name='invoices')
+    path('invoices/<int:year>/<int:month>', views.invoices_index, name='invoices'),
+
+    path('reports/<int:year>/<int:month>', views.reports_index, name='reports')
 ]
