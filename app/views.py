@@ -68,18 +68,17 @@ def invoices_index(request, year, month):
 def reports_index(request, year, month):
     # レコードがない場合は0ではなく省略されるのでannotateは使えない
     report_by_sex = []
-
     for curriculum in Curriculum.objects.all():
         for i in [1,2]:
             reportline = {
-                'curriculum__name' : curriculum.name,
-                'user__sex': i
+                'curriculum__name': curriculum.name,
+                'user__sex'       : i
             }
             reportline.update(
                 Lesson.objects.filter(
-                    curriculum__name = curriculum.name,
-                    user__sex = i,
-                    created_at__year = year,
+                    curriculum__name  = curriculum.name,
+                    user__sex         = i,
+                    created_at__year  = year,
                     created_at__month = month,
                 ).aggregate(
                     Count('id'),
@@ -94,16 +93,16 @@ def reports_index(request, year, month):
         for i in [1,2]:
             for generation in range(10,90,10):
                 reportline = {
-                    'curriculum__name' : curriculum.name,
-                    'user__sex': i,
+                    'curriculum__name': curriculum.name,
+                    'user__sex'       : i,
                     'user__generation': generation,
                 }
                 reportline.update(
                     Lesson.objects.filter(
-                        curriculum__name = curriculum.name,
-                        user__sex = i,
-                        user__generation = generation,
-                        created_at__year = year,
+                        curriculum__name  = curriculum.name,
+                        user__sex         = i,
+                        user__generation  = generation * 10,
+                        created_at__year  = year,
                         created_at__month = month,
                     ).aggregate(
                         Count('id'),
@@ -113,6 +112,5 @@ def reports_index(request, year, month):
                 )
                 report_by_generation.append(reportline)
     return render(request, 'app/reports/index.html',
-                  { 'report_by_sex': report_by_sex,
+                  { 'report_by_sex'       : report_by_sex,
                     'report_by_generation': report_by_generation })
-
