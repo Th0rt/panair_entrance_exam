@@ -1,0 +1,56 @@
+{% extends "app/base.html" %}
+{% load staticfiles humanize helper %}
+
+{% block script %}
+  <script src="{% static 'js/main.js' %}"></script>
+{% endblock script %}
+
+{% block content %}
+    <h1>レポート</h1>
+    {% pulldonw_link contents='reports' %}
+    <p>ジャンルと性別別</p>
+    <table class="table table-striped">
+      <thead>
+        <th>カリキュラム名</th>
+        <th>性別</th>
+        <th>レッスン数</th>
+        <th>受講者数</th>
+        <th>売上</th>
+      </thead>
+      <tbody>
+        {% for reportline in report_by_sex %}
+          <tr>
+            <td>{{ reportline.curriculum__name}}</td>
+            <td>{{ reportline.user__sex | display_sex }}</td>
+            <td>{{ reportline.id__count }}</td>
+            <td>{{ reportline.user__count }}</td>
+            <td>¥ {{ reportline.charge__sum | default:0 | intcomma }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    <p>ジャンルと年齢層別</p>
+    <table class="table table-striped">
+      <thead>
+        <th>カリキュラム名</th>
+        <th>性別</th>
+        <th>年齢層</th>
+        <th>レッスン数</th>
+        <th>受講者数</th>
+        <th>売上</th>
+      </thead>
+      <tbody>
+        {% for reportline in report_by_generation %}
+          <tr>
+            <td>{{ reportline.curriculum__name }}</td>
+            <td>{{ reportline.user__sex | display_sex }}</td>
+            <td>{{ reportline.user__generation }} 代</td>
+            <td>{{ reportline.id__count }}</td>
+            <td>{{ reportline.user__count }}</td>
+            <td>¥ {{ reportline.charge__sum | default:0 | intcomma }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  <a class="btn btn-info" href="{% url 'app:index' %}" >トップ</a>
+{% endblock content %}
