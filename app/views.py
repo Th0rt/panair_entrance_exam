@@ -92,7 +92,7 @@ def reports_index(request, year, month):
     report_by_generation = []
     for curriculum in Curriculum.objects.all():
         for i in [1,2]:
-            for generation in [10, 20, 30, 40, 50, 60, 70, 80]:
+            for generation in range(10,90,10):
                 reportline = {
                     'curriculum__name' : curriculum.name,
                     'user__sex': i,
