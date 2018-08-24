@@ -15,12 +15,20 @@ class User(models.Model):
     SEXES_CHOICE = ((1, '男性'), (2, '女性'))
     name        = models.CharField(max_length=50)
     age         = models.IntegerField()
+    generation  = models.IntegerField(null=True)
     sex         = models.IntegerField(choices=SEXES_CHOICE, default=1)
     curriculums = models.ManyToManyField(Curriculum, through='Lesson')
     created_at  = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
         return self.name
+
+    def save(self):
+        self.generation = self.calc_generation()
+        super(User, self).save()
+
+    def calc_generation(self):
+        return math.floor(self.age / 10) * 10
 
 class Lesson(models.Model):
     user       = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -57,4 +65,3 @@ class Invoice:
             return self.lessons.aggregate(Sum('charge'))['charge__sum']
         else:
             return 0
-        
