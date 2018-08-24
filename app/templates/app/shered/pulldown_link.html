@@ -1,0 +1,6 @@
+<select id="link_to_past_month">
+  <option value="">--請求月を選択--</option>
+  {% for link in links %}
+    <option value="/{{ contents }}/{{ link | first }}">{{ link | last }}</option>
+  {% endfor %}
+</select>
