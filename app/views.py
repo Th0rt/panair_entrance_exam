@@ -77,7 +77,9 @@ def reports_index(request, year, month):
             reportline.update(
                 Lesson.objects.filter(
                     curriculum__name = curriculum.name,
-                    user__sex = i
+                    user__sex = i,
+                    created_at__year = year,
+                    created_at__month = month,
                 ).aggregate(
                     Count('id'),
                     Count('user', distinct = True),
@@ -100,6 +102,8 @@ def reports_index(request, year, month):
                         curriculum__name = curriculum.name,
                         user__sex = i,
                         user__generation = generation,
+                        created_at__year = year,
+                        created_at__month = month,
                     ).aggregate(
                         Count('id'),
                         Count('user', distinct = True),
