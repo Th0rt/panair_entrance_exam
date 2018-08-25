@@ -19,3 +19,7 @@ def pulldonw_link(contents):
       links.append([date.strftime('%Y/%-m'), date.strftime('%Y年 %-m月')])
 
     return { 'contents': contents, 'links': links }
+
+@register.inclusion_tag("app/shered/navbar.html")
+def navbar(*args):
+    return { 'args': args }
