@@ -12,6 +12,12 @@ class Curriculum(models.Model):
     def __str__(self):
         return self.name
 
+class Discount_pattern(models.Model):
+    start_total_time  = models.IntegerField()
+    discount_per_hour = models.IntegerField()
+    curriculums       = models.ManyToManyField(Curriculum)
+    created_at        = models.DateTimeField(default=timezone.now)
+
 class User(models.Model):
     SEXES_CHOICE = ((1, '男性'), (2, '女性'))
     name        = models.CharField(max_length=50)
@@ -44,7 +50,21 @@ class Lesson(models.Model):
 
     def calc_charge(self):
         charge = self.curriculum.basic_charge + (self.curriculum.metered_charge * self.time)
-        return charge
+        discount = self.calc_discount()
+        return (charge - discount)
+
+    def calc_discount(self):
+        patterns    = self.curriculum.discount_pattern_set.order_by('-start_total_time')
+        lesson_time = self.time
+        discount    = 0
+
+        if patterns.count() == 0: return 0
+
+        for pattern in patterns:
+            if self.time > pattern.start_total_time:
+                discount += (lesson_time - pattern.start_total_time) * pattern.discount_per_hour
+                lesson_time = pattern.start_total_time
+        return discount
 
 class Invoice:
 
