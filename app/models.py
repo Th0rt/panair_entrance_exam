@@ -4,10 +4,11 @@ from django.db.models import Sum
 from django.utils import timezone
 
 class Curriculum(models.Model):
-    name           = models.CharField(max_length=50)
-    basic_charge   = models.IntegerField()
-    metered_charge = models.IntegerField()
-    created_at     = models.DateTimeField(default=timezone.now)
+    name              = models.CharField(max_length=50)
+    basic_charge      = models.IntegerField()
+    basic_lesson_time = models.IntegerField(default=0)
+    metered_charge    = models.IntegerField()
+    created_at        = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
         return self.name
@@ -49,7 +50,9 @@ class Lesson(models.Model):
         super(Lesson, self).save()
 
     def calc_charge(self):
-        charge = self.curriculum.basic_charge + (self.curriculum.metered_charge * self.time)
+        curriculum = self.curriculum
+        charge_target_time = self.time - self.curriculum.basic_lesson_time
+        charge = curriculum.basic_charge + (curriculum.metered_charge * charge_target_time)
         discount = self.calc_discount()
         return (charge - discount)
 
