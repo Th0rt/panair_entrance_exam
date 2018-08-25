@@ -3,6 +3,7 @@
   fields:
     name: 英語
     basic_charge: 5000
+    basic_lesson_time: 0
     metered_charge: 3500
 
 - model: app.curriculum
@@ -10,6 +11,7 @@
   fields:
     name: ファイナンス
     basic_charge: 0
+    basic_lesson_time: 0
     metered_charge: 3300
 
 - model: app.curriculum
@@ -17,6 +19,7 @@
   fields:
     name: プログラミング
     basic_charge: 20000
+    basic_lesson_time: 5
     metered_charge: 3500
 
 - model: app.discount_pattern
