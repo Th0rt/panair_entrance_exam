@@ -91,6 +91,10 @@ class Lesson(models.Model):
         verbose_name = 'カリキュラム',
         on_delete    = models.CASCADE
     )
+    lesson_date = models.DateField(
+        verbose_name = '受講日',
+        default      = timezone.now
+    )
     time = models.IntegerField(
         verbose_name = '受講時間(h)',
         validators   = [
