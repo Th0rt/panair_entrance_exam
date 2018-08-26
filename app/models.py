@@ -4,29 +4,66 @@ from django.db.models import Sum
 from django.utils import timezone
 
 class Curriculum(models.Model):
-    name              = models.CharField(max_length=50)
-    basic_charge      = models.IntegerField()
-    basic_lesson_time = models.IntegerField(default=0)
-    metered_charge    = models.IntegerField()
-    created_at        = models.DateTimeField(default=timezone.now)
+    name = models.CharField(
+        verbose_name = 'カリキュラム名',
+        max_length   = 50
+    )
+    basic_charge = models.IntegerField (
+        verbose_name = '基本料金'
+    )
+    metered_charge = models.IntegerField (
+        verbose_name = '従量料金'
+    )
+    created_at = models.DateTimeField(
+        verbose_name = '作成日',
+        default      = timezone.now
+    )
 
     def __str__(self):
         return self.name
 
 class Discount_pattern(models.Model):
-    start_total_time  = models.IntegerField()
-    discount_per_hour = models.IntegerField()
-    curriculums       = models.ManyToManyField(Curriculum)
-    created_at        = models.DateTimeField(default=timezone.now)
+    start_total_time = models.IntegerField(
+        verbose_name = '適用開始時間'
+    )
+    discount_per_hour = models.IntegerField(
+        verbose_name = '１時間あたりの割引額'
+    )
+    curriculums = models.ManyToManyField(
+        Curriculum,
+        verbose_name = '適用するカリキュラム',
+    )
+    created_at = models.DateTimeField(
+        verbose_name = '作成日',
+        default      = timezone.now
+    )
 
 class User(models.Model):
-    SEXES_CHOICE = ((1, '男性'), (2, '女性'))
-    name        = models.CharField(max_length=50)
-    age         = models.IntegerField()
-    generation  = models.IntegerField(null=True)
-    sex         = models.IntegerField(choices=SEXES_CHOICE, default=1)
-    curriculums = models.ManyToManyField(Curriculum, through='Lesson')
-    created_at  = models.DateTimeField(default=timezone.now)
+    name = models.CharField(
+        verbose_name = 'ユーザー名',
+        max_length   = 50
+    )
+    age = models.IntegerField(
+        verbose_name = '年齢'
+    )
+    generation  = models.IntegerField(
+        verbose_name = '年代',
+        null         = True
+    )
+    sex = models.IntegerField(
+        verbose_name = '性別',
+        choices      = ((1, '男性'), (2, '女性')),
+        default      = 1
+    )
+    curriculums = models.ManyToManyField(
+        Curriculum,
+        through      = 'Lesson',
+        verbose_name = '受講記録'
+    )
+    created_at  = models.DateTimeField(
+        verbose_name = '作成日',
+        default      = timezone.now
+    )
 
     def __str__(self):
         return self.name
@@ -39,11 +76,27 @@ class User(models.Model):
         return math.floor(self.age / 10) * 10
 
 class Lesson(models.Model):
-    user       = models.ForeignKey(User, on_delete=models.CASCADE)
-    curriculum = models.ForeignKey(Curriculum, on_delete=models.CASCADE)
-    time       = models.IntegerField()
-    charge     = models.IntegerField(null=True)
-    created_at = models.DateTimeField(default=timezone.now)
+    user = models.ForeignKey(
+        User,
+        verbose_name = 'ユーザー',
+        on_delete    = models.CASCADE
+    )
+    curriculum = models.ForeignKey(
+        Curriculum,
+        verbose_name = 'カリキュラム',
+        on_delete    = models.CASCADE
+    )
+    time = models.IntegerField(
+        verbose_name = '受講時間(h)'
+    )
+    charge = models.IntegerField(
+        verbose_name = '料金',
+        null         = True
+    )
+    created_at = models.DateTimeField(
+        verbose_name = '作成日',
+        default      = timezone.now
+    )
 
     def save(self):
         self.charge = self.calc_charge()
