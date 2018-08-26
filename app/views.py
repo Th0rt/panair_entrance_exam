@@ -46,6 +46,8 @@ def lessons_new(request):
         if new_lesson.is_valid():
             new_lesson.save()
             return redirect('app:lessons')
+        else:
+            form = new_lesson
     else:
         form = LessonForm()
     return render(request, 'app/lessons/edit.html', { 'form' : form })
@@ -57,6 +59,8 @@ def lessons_edit(request, id):
         if edit_lesson.is_valid():
             edit_lesson.save()
             return redirect('app:lessons')
+        else:
+            form = edit_lesson
     else:
         form = LessonForm(instance = lesson)
     return render(request, 'app/lessons/edit.html', { 'form': form })
