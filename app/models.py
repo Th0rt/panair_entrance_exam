@@ -2,6 +2,7 @@ import math
 from django.db import models
 from django.db.models import Sum
 from django.utils import timezone
+from django.core.validators import MaxValueValidator, MinValueValidator
 
 class Curriculum(models.Model):
     name = models.CharField(
@@ -87,7 +88,11 @@ class Lesson(models.Model):
         on_delete    = models.CASCADE
     )
     time = models.IntegerField(
-        verbose_name = '受講時間(h)'
+        verbose_name = '受講時間(h)',
+        validators   = [
+            MinValueValidator(1),
+            MaxValueValidator(12)
+        ]
     )
     charge = models.IntegerField(
         verbose_name = '料金',
