@@ -108,7 +108,7 @@ class Lesson(models.Model):
 
     def calc_charge(self):
         curriculum = self.curriculum
-        charge_target_time = self.time - self.curriculum.basic_lesson_time
+        charge_target_time = self.time - curriculum.basic_lesson_time
         charge = curriculum.basic_charge + (curriculum.metered_charge * charge_target_time)
         discount = self.calc_discount()
         return (charge - discount)
