@@ -20,7 +20,7 @@
           <td>{{ lesson.user.id }}</td>
           <td>{{ lesson.user.name }}</td>
           <td>{{ lesson.curriculum.name }}</td>
-          <td>{{ lesson.created_at|date:"Y年 n月 j日"}}</td>
+          <td>{{ lesson.lesson_date|date:"Y年 n月 j日"}}</td>
           <td>{{ lesson.time }} h</td>
           <td>{{ lesson.charge }} 円</td>
           <td><a href="{% url 'app:lessons_edit' id=lesson.id %}">編集</a></td>

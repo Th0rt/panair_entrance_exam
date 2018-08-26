@@ -1,4 +1,5 @@
 from django import forms
+from django.forms import DateInput
 from .models import User, Lesson
 
 class UserForm(forms.ModelForm):
@@ -10,5 +11,8 @@ class UserForm(forms.ModelForm):
 class LessonForm(forms.ModelForm):
 
     class Meta:
-        model = Lesson
-        fields = ('user', 'curriculum', 'time')
+        model   = Lesson
+        fields  = ('user', 'curriculum', 'lesson_date', 'time')
+        widgets = {
+            'lesson_date' : DateInput(attrs = { "type": "date" })
+        }
