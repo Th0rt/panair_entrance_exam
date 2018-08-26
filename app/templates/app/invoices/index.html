@@ -1,6 +1,6 @@
 
 {% extends "app/base.html" %}
-{% load staticfiles humanize %}
+{% load staticfiles humanize helper %}
 
 {% block script %}
   <script src="{% static 'js/main.js' %}"></script>
@@ -8,9 +8,7 @@
 
 {% block content %}
   <h1>請求一覧</h1>
-  <select id="link_to_past_month">
-    <option value="">--- 月を選んでください ---</option>
-  </select>
+  {% pulldonw_link contents='invoices' %}
   <table class="table">
     <thead>
       <th>ID</th>
