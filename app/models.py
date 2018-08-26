@@ -11,6 +11,10 @@ class Curriculum(models.Model):
     basic_charge = models.IntegerField (
         verbose_name = '基本料金'
     )
+    basic_lesson_time = models.IntegerField(
+        verbose_name = '基本料金に含まれる時間',
+        default      = 0
+    )
     metered_charge = models.IntegerField (
         verbose_name = '従量料金'
     )
