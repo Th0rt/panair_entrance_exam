@@ -1,3 +1,27 @@
+- model: app.discount_pattern
+  pk: 1
+  fields:
+    start_total_time: 20
+    discount_per_hour: 500
+
+- model: app.discount_pattern
+  pk: 2
+  fields:
+    start_total_time: 35
+    discount_per_hour: 700
+
+- model: app.discount_pattern
+  pk: 3
+  fields:
+    start_total_time: 50
+    discount_per_hour: 800
+
+- model: app.discount_pattern
+  pk: 4
+  fields:
+    start_total_time: 50
+    discount_per_hour: 700
+
 - model: app.curriculum
   pk: 1
   fields:
@@ -13,6 +37,7 @@
     basic_charge: 0
     basic_lesson_time: 0
     metered_charge: 3300
+    discount_pattern: [1, 3]
 
 - model: app.curriculum
   pk: 3
@@ -21,31 +46,4 @@
     basic_charge: 20000
     basic_lesson_time: 5
     metered_charge: 3500
-
-- model: app.discount_pattern
-  pk: 1
-  fields:
-    start_total_time: 20
-    discount_per_hour: 500
-    curriculums: [2, 3]
-
-- model: app.discount_pattern
-  pk: 2
-  fields:
-    start_total_time: 35
-    discount_per_hour: 700
-    curriculums: [2]
-
-- model: app.discount_pattern
-  pk: 3
-  fields:
-    start_total_time: 50
-    discount_per_hour: 800
-    curriculums: [2]
-
-- model: app.discount_pattern
-  pk: 4
-  fields:
-    start_total_time: 50
-    discount_per_hour: 700
-    curriculums: [3]
+    discount_pattern: [1, 2, 4]

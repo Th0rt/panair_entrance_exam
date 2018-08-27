@@ -16,7 +16,7 @@ class Migration(migrations.Migration):
         ),
         migrations.AddField(
             model_name='curriculum',
-            name='curriculums',
+            name='discount_pattern',
             field=models.ManyToManyField(to='app.Discount_pattern', verbose_name='割引パターン'),
         ),
     ]
