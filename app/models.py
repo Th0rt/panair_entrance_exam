@@ -128,20 +128,20 @@ class Lesson(models.Model):
         return self.basic_charge() + self.metered_charge() - self.discount()
 
     def basic_charge(self):
-        if self.user.total_lesson_time(self.curriculum.id, 2018, 8) == 0:
+        if self.user.total_lesson_time(self.curriculum.id, self.lesson_date.year, self.lesson_date.month) == 0:
             return self.curriculum.basic_charge
         else:
             return 0
 
     def metered_charge(self):
-        if self.user.total_lesson_time(self.curriculum.id, 2018, 8) == 0:
+        if self.user.total_lesson_time(self.curriculum.id, self.lesson_date.year, self.lesson_date.month) == 0:
             return self.curriculum.metered_charge * (self.time - self.curriculum.basic_lesson_time)
         else:
             return self.curriculum.metered_charge * self.time
 
     def discount(self):
         patterns            = self.curriculum.discount_pattern.order_by('start_total_time')
-        current_lesson_time = self.user.total_lesson_time(self.curriculum.id, 2018, 8)
+        current_lesson_time = self.user.total_lesson_time(self.curriculum.id, self.lesson_date.year, self.lesson_date.month)
         add_lesson_time     = self.time
         discount_time       = 0
         discount            = 0
