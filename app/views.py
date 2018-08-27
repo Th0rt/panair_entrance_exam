@@ -105,7 +105,7 @@ def reports_index(request, year, month):
                     Lesson.objects.filter(
                         curriculum__name  = curriculum.name,
                         user__sex         = i,
-                        user__generation  = generation * 10,
+                        user__generation  = generation,
                         created_at__year  = year,
                         created_at__month = month,
                     ).aggregate(
