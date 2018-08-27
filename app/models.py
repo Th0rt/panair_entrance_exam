@@ -107,10 +107,6 @@ class Lesson(models.Model):
     )
     time = models.IntegerField(
         verbose_name = '受講時間(h)',
-        validators   = [
-            MinValueValidator(1),
-            MaxValueValidator(12)
-        ]
     )
     charge = models.IntegerField(
         verbose_name = '料金',
@@ -141,28 +137,27 @@ class Lesson(models.Model):
         patterns            = self.curriculum.discount_pattern_set.order_by('start_total_time')
         current_lesson_time = self.user.total_lesson_time(self.curriculum.id, 2018, 8)
         add_lesson_time     = self.time
+        discount_time       = 0
         discount            = 0
 
         if patterns.count() == 0: return 0
 
         for i, pattern in enumerate(patterns):
-            if add_lesson_time <= 0 : break
+            discount_range_begin = pattern.start_total_time
+            if current_lesson_time < discount_range_begin: continue
 
             if i == patterns.count() - 1:
                 discount_time = add_lesson_time
             else:
-                discount_range_begin = pattern.start_total_time
-                discount_range_end   = patterns[i + 1].start_total_time
-
-                if (current_lesson_time >= discount_range_begin and current_lesson_time < discount_range_end):
+                discount_range_end = patterns[i + 1].start_total_time
+                if current_lesson_time < discount_range_end:
                     discount_time = min(add_lesson_time, discount_range_end - current_lesson_time)
-                else:
-                    continue
 
-            import pdb; pdb.set_trace()
             current_lesson_time += discount_time
             add_lesson_time   -= discount_time
             discount          += discount_time * pattern.discount_per_hour
+
+            if add_lesson_time <= 0 : break
 
         return discount
 
