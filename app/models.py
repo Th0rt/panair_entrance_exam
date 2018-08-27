@@ -34,7 +34,7 @@ class Curriculum(models.Model):
     metered_charge = models.IntegerField (
         verbose_name = '従量料金'
     )
-    curriculums = models.ManyToManyField(
+    discount_pattern = models.ManyToManyField(
         Discount_pattern,
         verbose_name = '割引パターン',
     )
@@ -134,10 +134,13 @@ class Lesson(models.Model):
             return 0
 
     def metered_charge(self):
-        return self.curriculum.metered_charge * self.time
+        if self.user.total_lesson_time(self.curriculum.id, 2018, 8) == 0:
+            return self.curriculum.metered_charge * (self.time - self.curriculum.basic_lesson_time)
+        else:
+            return self.curriculum.metered_charge * self.time
 
     def discount(self):
-        patterns            = self.curriculum.discount_pattern_set.order_by('start_total_time')
+        patterns            = self.curriculum.discount_pattern.order_by('start_total_time')
         current_lesson_time = self.user.total_lesson_time(self.curriculum.id, 2018, 8)
         add_lesson_time     = self.time
         discount_time       = 0
