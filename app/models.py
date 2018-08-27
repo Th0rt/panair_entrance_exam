@@ -4,6 +4,21 @@ from django.db.models import Sum
 from django.utils import timezone
 from django.core.validators import MaxValueValidator, MinValueValidator
 
+class Discount_pattern(models.Model):
+    start_total_time = models.IntegerField(
+        verbose_name = '適用開始時間'
+    )
+    discount_per_hour = models.IntegerField(
+        verbose_name = '１時間あたりの割引額'
+    )
+    created_at = models.DateTimeField(
+        verbose_name = '作成日',
+        default      = timezone.now
+    )
+
+    def __str__(self):
+        return "%sh以上 ¥%s円引" % (self.start_total_time, self.discount_per_hour)
+
 class Curriculum(models.Model):
     name = models.CharField(
         verbose_name = 'カリキュラム名',
@@ -19,6 +34,10 @@ class Curriculum(models.Model):
     metered_charge = models.IntegerField (
         verbose_name = '従量料金'
     )
+    curriculums = models.ManyToManyField(
+        Discount_pattern,
+        verbose_name = '割引パターン',
+    )
     created_at = models.DateTimeField(
         verbose_name = '作成日',
         default      = timezone.now
@@ -26,22 +45,6 @@ class Curriculum(models.Model):
 
     def __str__(self):
         return self.name
-
-class Discount_pattern(models.Model):
-    start_total_time = models.IntegerField(
-        verbose_name = '適用開始時間'
-    )
-    discount_per_hour = models.IntegerField(
-        verbose_name = '１時間あたりの割引額'
-    )
-    curriculums = models.ManyToManyField(
-        Curriculum,
-        verbose_name = '適用するカリキュラム',
-    )
-    created_at = models.DateTimeField(
-        verbose_name = '作成日',
-        default      = timezone.now
-    )
 
 class User(models.Model):
     name = models.CharField(
