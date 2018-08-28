@@ -127,6 +127,10 @@ class Lesson(models.Model):
     )
     time = models.IntegerField(
         verbose_name = '受講時間(h)',
+        validators   = [
+            MinValueValidator(1),
+            MaxValueValidator(12)
+        ]
     )
     charge = models.IntegerField(
         verbose_name = '料金',
