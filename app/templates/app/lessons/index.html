@@ -11,6 +11,9 @@
       <th>ジャンル</th>
       <th>受講日</th>
       <th>受講時間</th>
+      <th>基本料金</th>
+      <th>従量料金</th>
+      <th>値引</th>
       <th>支払い金額</th>
       <th></th>
     </thead>
@@ -22,7 +25,10 @@
           <td>{{ lesson.curriculum.name }}</td>
           <td>{{ lesson.lesson_date|date:"Y年 n月 j日"}}</td>
           <td>{{ lesson.time }} h</td>
-          <td>{{ lesson.charge }} 円</td>
+          <td>{{ lesson.basic_charge }}</td>
+          <td>{{ lesson.metered_charge }}</td>
+          <td>{{ lesson.discount }}</td>
+          <td>{{ lesson.total_charge }} 円</td>
           <td><a href="{% url 'app:lessons_edit' id=lesson.id %}">編集</a></td>
         </tr>
       </tbody>

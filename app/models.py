@@ -1,7 +1,8 @@
-import math
+import math, datetime
 from django.db import models
 from django.db.models import Sum
 from django.utils import timezone
+from dateutil.relativedelta import relativedelta
 from django.core.validators import MaxValueValidator, MinValueValidator
 
 class Discount_pattern(models.Model):
@@ -46,6 +47,23 @@ class Curriculum(models.Model):
     def __str__(self):
         return self.name
 
+    @property
+    def discount_pattern_list(self):
+        discount_patterns = self.discount_pattern.order_by('start_total_time')
+        discount_pattern_list = []
+
+        for i, discount_pattern in enumerate(discount_patterns):
+            pattern = {
+                'value'            : discount_pattern.discount_per_hour,
+                'lesson_time_begin': discount_pattern.start_total_time
+            }
+            if discount_pattern != discount_patterns.last():
+                pattern['lesson_time_end'] = discount_patterns[i + 1].start_total_time
+
+            discount_pattern_list.append(pattern)
+
+        return discount_pattern_list
+
 class User(models.Model):
     name = models.CharField(
         verbose_name = 'ユーザー名',
@@ -83,11 +101,10 @@ class User(models.Model):
     def calc_generation(self):
         return math.floor(self.age / 10) * 10
 
-    def total_lesson_time(self, curriculum_id, year, month):
+    def total_lesson_time(self, curriculum_id, begin, end):
         total_lesson_time = self.lesson_set.filter(
             curriculum__id       = curriculum_id,
-            lesson_date__year    = year,
-            lesson_date__month   = month
+            lesson_date__range   = (begin, end)
         ).aggregate(Sum('time'))['time__sum']
 
         if total_lesson_time is None: total_lesson_time = 0
@@ -121,51 +138,67 @@ class Lesson(models.Model):
     )
 
     def save(self):
-        self.charge = self.total_charge()
+        self.charge = self.total_charge
         super(Lesson, self).save()
 
+    @property
     def total_charge(self):
-        return self.basic_charge() + self.metered_charge() - self.discount()
+        return self.basic_charge + self.metered_charge - self.discount
 
+    @property
     def basic_charge(self):
-        if self.user.total_lesson_time(self.curriculum.id, self.lesson_date.year, self.lesson_date.month) == 0:
+        if self.user.total_lesson_time(
+            self.curriculum.id,
+            self.lesson_date - relativedelta(days = self.lesson_date.day - 1),
+            self.lesson_date - relativedelta(days = 1)
+        ) <= 0:
             return self.curriculum.basic_charge
         else:
             return 0
 
+    @property
     def metered_charge(self):
-        if self.user.total_lesson_time(self.curriculum.id, self.lesson_date.year, self.lesson_date.month) == 0:
+        if self.user.total_lesson_time(
+            self.curriculum.id,
+            self.lesson_date - relativedelta(days = self.lesson_date.day - 1),
+            self.lesson_date - relativedelta(days = 1)
+        ) <= 0:
             return self.curriculum.metered_charge * (self.time - self.curriculum.basic_lesson_time)
         else:
             return self.curriculum.metered_charge * self.time
 
+    @property
     def discount(self):
-        patterns            = self.curriculum.discount_pattern.order_by('start_total_time')
-        current_lesson_time = self.user.total_lesson_time(self.curriculum.id, self.lesson_date.year, self.lesson_date.month)
+        return sum([ discount['discount'] for discount in self.discount_detail ])
+
+    @property
+    def discount_detail(self):
+        discount_patterns   = self.curriculum.discount_pattern_list
+        current_lesson_time = self.user.total_lesson_time(
+            self.curriculum.id,
+            self.lesson_date - relativedelta(days = self.lesson_date.day - 1),
+            self.lesson_date - relativedelta(days = 1)
+        )
         add_lesson_time     = self.time
-        discount_time       = 0
-        discount            = 0
 
-        if patterns.count() == 0: return 0
+        for pattern in discount_patterns:
+            pattern['time']     = 0
+            pattern['discount'] = 0
 
-        for i, pattern in enumerate(patterns):
-            discount_range_begin = pattern.start_total_time
-            if current_lesson_time < discount_range_begin: continue
+            if add_lesson_time <= 0 : continue
+            if current_lesson_time < pattern['lesson_time_begin'] : continue
 
-            if i == patterns.count() - 1:
-                discount_time = add_lesson_time
+            if 'lesson_time_end' in pattern:
+                if current_lesson_time < pattern['lesson_time_end']:
+                    pattern['time'] = min(add_lesson_time, pattern['lesson_time_end'] - current_lesson_time)
             else:
-                discount_range_end = patterns[i + 1].start_total_time
-                if current_lesson_time < discount_range_end:
-                    discount_time = min(add_lesson_time, discount_range_end - current_lesson_time)
+                pattern['time'] = add_lesson_time
 
-            current_lesson_time += discount_time
-            add_lesson_time   -= discount_time
-            discount          += discount_time * pattern.discount_per_hour
+            current_lesson_time += pattern['time']
+            add_lesson_time     -= pattern['time']
+            pattern['discount']  = pattern['time'] * pattern['value']
 
-            if add_lesson_time <= 0 : break
-
-        return discount
+        return discount_patterns
 
 class Invoice:
 
