@@ -147,56 +147,52 @@ class Lesson(models.Model):
 
     @property
     def basic_charge(self):
-        if self.user.total_lesson_time(
+        total_lesson_time_exclude_this = self.user.total_lesson_time(
             self.curriculum.id,
             self.lesson_date - relativedelta(days = self.lesson_date.day - 1),
             self.lesson_date - relativedelta(days = 1)
-        ) <= 0:
+        )
+        if total_lesson_time_exclude_this <= 0:
             return self.curriculum.basic_charge
         else:
             return 0
 
     @property
     def metered_charge(self):
-        if self.user.total_lesson_time(
+        total_lesson_time_exclude_this = self.user.total_lesson_time(
             self.curriculum.id,
             self.lesson_date - relativedelta(days = self.lesson_date.day - 1),
             self.lesson_date - relativedelta(days = 1)
-        ) <= 0:
-            return self.curriculum.metered_charge * (self.time - self.curriculum.basic_lesson_time)
+        )
+        if total_lesson_time_exclude_this < self.curriculum.basic_lesson_time:
+            return self.curriculum.metered_charge * max(total_lesson_time_exclude_this + self.time - self.curriculum.basic_lesson_time, 0)
         else:
             return self.curriculum.metered_charge * self.time
 
     @property
     def discount(self):
-        return sum([ discount['discount'] for discount in self.discount_detail ])
+        return sum([ discount['discount_value'] for discount in self.discount_detail ])
 
     @property
     def discount_detail(self):
         discount_patterns   = self.curriculum.discount_pattern_list
-        current_lesson_time = self.user.total_lesson_time(
+        total_lesson_time_exclude_this = self.user.total_lesson_time(
             self.curriculum.id,
             self.lesson_date - relativedelta(days = self.lesson_date.day - 1),
             self.lesson_date - relativedelta(days = 1)
         )
-        add_lesson_time     = self.time
+        total_lesson_time_include_this = total_lesson_time_exclude_this + self.time
 
         for pattern in discount_patterns:
-            pattern['time']     = 0
-            pattern['discount'] = 0
-
-            if add_lesson_time <= 0 : continue
-            if current_lesson_time < pattern['lesson_time_begin'] : continue
-
             if 'lesson_time_end' in pattern:
-                if current_lesson_time < pattern['lesson_time_end']:
-                    pattern['time'] = min(add_lesson_time, pattern['lesson_time_end'] - current_lesson_time)
+                discount_range    = range(pattern['lesson_time_begin'] + 1, pattern['lesson_time_end'] + 1)
+                lesson_time_range = range(total_lesson_time_exclude_this + 1, total_lesson_time_include_this + 1)
+                discount_hour = len([ i for i in lesson_time_range if i in discount_range ])
             else:
-                pattern['time'] = add_lesson_time
+                discount_hour = total_lesson_time_include_this - pattern['lesson_time_begin']
 
-            current_lesson_time += pattern['time']
-            add_lesson_time     -= pattern['time']
-            pattern['discount']  = pattern['time'] * pattern['value']
+            pattern['discount_hour']  = max(discount_hour, 0)
+            pattern['discount_value'] = pattern['discount_hour'] * pattern['value']
 
         return discount_patterns
 
