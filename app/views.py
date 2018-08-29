@@ -2,7 +2,7 @@ import datetime
 from django.shortcuts import render
 from django.shortcuts import redirect
 from django.db.models import Sum, Count
-from .models import User, Lesson, Curriculum, Invoice
+from .models import User, Lesson, Curriculum, Invoice, Report
 from .forms import UserForm, LessonForm
 
 
@@ -74,47 +74,39 @@ def reports_index(request, year, month):
     report_by_sex = []
     for curriculum in Curriculum.objects.all():
         for i in [1,2]:
-            reportline = {
-                'curriculum__name': curriculum.name,
-                'user__sex'       : i
-            }
-            reportline.update(
-                Lesson.objects.filter(
-                    curriculum__name   = curriculum.name,
-                    user__sex          = i,
-                    lesson_date__year  = year,
-                    lesson_date__month = month,
-                ).aggregate(
-                    Count('id'),
-                    Count('user', distinct = True),
-                    Sum('charge'),
-                )
+            report_obj = Report(
+                curriculum__id     = curriculum.id,
+                user__sex          = i,
+                lesson_date__year  = year,
+                lesson_date__month = month
             )
-            report_by_sex.append(reportline)
+            report_by_sex.append({
+                'curriculum_name' : curriculum.name,
+                'user_sex'        : i,
+                'lessons_count'   : report_obj.lessons_count,
+                'users_count'     : report_obj.users_count,
+                'sum_charge'      : report_obj.sum_charge
+            })
 
     report_by_generation = []
     for curriculum in Curriculum.objects.all():
         for i in [1,2]:
             for generation in range(10,90,10):
-                reportline = {
-                    'curriculum__name': curriculum.name,
-                    'user__sex'       : i,
-                    'user__generation': generation,
-                }
-                reportline.update(
-                    Lesson.objects.filter(
-                        curriculum__name   = curriculum.name,
-                        user__sex          = i,
-                        user__generation   = generation,
-                        lesson_date__year  = year,
-                        lesson_date__month = month,
-                    ).aggregate(
-                        Count('id'),
-                        Count('user', distinct = True),
-                        Sum('charge'),
-                    )
+                report_obj = Report(
+                    curriculum__id     = curriculum.id,
+                    user__sex          = i,
+                    user__generation   = generation,
+                    lesson_date__year  = year,
+                    lesson_date__month = month
                 )
-                report_by_generation.append(reportline)
+                report_by_generation.append({
+                    'curriculum_name' : curriculum.name,
+                    'user_sex'        : i,
+                    'user_generation' : generation,
+                    'lessons_count'   : report_obj.lessons_count,
+                    'users_count'     : report_obj.users_count,
+                    'sum_charge'      : report_obj.sum_charge
+                })
     return render(request, 'app/reports/index.html',
                   { 'report_by_sex'       : report_by_sex,
                     'report_by_generation': report_by_generation })
