@@ -20,11 +20,11 @@
       <tbody>
         {% for reportline in report_by_sex %}
           <tr>
-            <td>{{ reportline.curriculum__name}}</td>
-            <td>{{ reportline.user__sex | display_sex }}</td>
-            <td>{{ reportline.id__count }}</td>
-            <td>{{ reportline.user__count }}</td>
-            <td>¥ {{ reportline.charge__sum | default:0 | intcomma }}</td>
+            <td>{{ reportline.curriculum_name}}</td>
+            <td>{{ reportline.user_sex | display_sex }}</td>
+            <td>{{ reportline.lessons_count }}</td>
+            <td>{{ reportline.users_count }}</td>
+            <td>¥ {{ reportline.sum_charge | intcomma }}</td>
           </tr>
         {% endfor %}
       </tbody>
@@ -42,12 +42,12 @@
       <tbody>
         {% for reportline in report_by_generation %}
           <tr>
-            <td>{{ reportline.curriculum__name }}</td>
-            <td>{{ reportline.user__sex | display_sex }}</td>
-            <td>{{ reportline.user__generation }} 代</td>
-            <td>{{ reportline.id__count }}</td>
-            <td>{{ reportline.user__count }}</td>
-            <td>¥ {{ reportline.charge__sum | default:0 | intcomma }}</td>
+            <td>{{ reportline.curriculum_name }}</td>
+            <td>{{ reportline.user_sex | display_sex }}</td>
+            <td>{{ reportline.user_generation }} 代</td>
+            <td>{{ reportline.lessons_count }}</td>
+            <td>{{ reportline.users_count }}</td>
+            <td>¥ {{ reportline.sum_charge | intcomma }}</td>
           </tr>
         {% endfor %}
       </tbody>

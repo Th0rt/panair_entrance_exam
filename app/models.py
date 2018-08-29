@@ -220,3 +220,29 @@ class Invoice:
             return self.lessons.aggregate(Sum('charge'))['charge__sum']
         else:
             return 0
+
+class Report:
+    lessons = []
+
+    def __init__(self, **kwargs):
+        self.lessons = [ lesson for lesson in Lesson.objects.filter(**kwargs) ]
+
+    @property
+    def lessons_count(self):
+        return len(self.lessons)
+
+    @property
+    def curriculums(self):
+        return list(set([ lesson.curriculum for lesson in self.lessons ]))
+
+    @property
+    def users(self):
+        return list(set([ lesson.user for lesson in self.lessons ]))
+
+    @property
+    def users_count(self):
+        return len(self.users)
+
+    @property
+    def sum_charge(self):
+        return sum([ lesson.total_charge for lesson in self.lessons ])
