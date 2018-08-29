@@ -216,10 +216,7 @@ class Invoice:
 
     @property
     def charge(self):
-        if self.lessons.count() != 0:
-            return self.lessons.aggregate(Sum('charge'))['charge__sum']
-        else:
-            return 0
+        return sum([ lesson.total_charge for lesson in self.lessons ])
 
 class Report:
     lessons = []
