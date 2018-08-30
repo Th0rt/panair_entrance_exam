@@ -101,14 +101,9 @@ class User(models.Model):
     def calc_generation(self):
         return math.floor(self.age / 10) * 10
 
-    def total_lesson_time(self, curriculum_id, begin, end):
-        total_lesson_time = self.lesson_set.filter(
-            curriculum__id       = curriculum_id,
-            lesson_date__range   = (begin, end)
-        ).aggregate(Sum('time'))['time__sum']
-
-        if total_lesson_time is None: total_lesson_time = 0
-        return total_lesson_time
+    def total_lesson_time(self, **kwargs):
+        lessons = self.lesson_set.filter(**kwargs)
+        return sum([ lesson.time for lesson in lessons ])
 
 class Lesson(models.Model):
     user = models.ForeignKey(
@@ -152,9 +147,11 @@ class Lesson(models.Model):
     @property
     def basic_charge(self):
         total_lesson_time_exclude_this = self.user.total_lesson_time(
-            self.curriculum.id,
-            self.lesson_date - relativedelta(days = self.lesson_date.day - 1),
-            self.lesson_date - relativedelta(days = 1)
+            curriculum__id = self.curriculum.id,
+            lesson_date__range = (
+                self.lesson_date - relativedelta(days = self.lesson_date.day - 1),
+                self.lesson_date - relativedelta(days = 1)
+            )
         )
         if total_lesson_time_exclude_this <= 0:
             return self.curriculum.basic_charge
@@ -164,9 +161,11 @@ class Lesson(models.Model):
     @property
     def metered_charge(self):
         total_lesson_time_exclude_this = self.user.total_lesson_time(
-            self.curriculum.id,
-            self.lesson_date - relativedelta(days = self.lesson_date.day - 1),
-            self.lesson_date - relativedelta(days = 1)
+            curriculum__id     = self.curriculum.id,
+            lesson_date__range = (
+                self.lesson_date - relativedelta(days = self.lesson_date.day - 1),
+                self.lesson_date - relativedelta(days = 1)
+            )
         )
         if total_lesson_time_exclude_this < self.curriculum.basic_lesson_time:
             return self.curriculum.metered_charge * max(total_lesson_time_exclude_this + self.time - self.curriculum.basic_lesson_time, 0)
@@ -181,9 +180,11 @@ class Lesson(models.Model):
     def discount_detail(self):
         discount_patterns   = self.curriculum.discount_pattern_list
         total_lesson_time_exclude_this = self.user.total_lesson_time(
-            self.curriculum.id,
-            self.lesson_date - relativedelta(days = self.lesson_date.day - 1),
-            self.lesson_date - relativedelta(days = 1)
+            curriculum__id = self.curriculum.id,
+            lesson_date__range = (
+                self.lesson_date - relativedelta(days = self.lesson_date.day - 1),
+                self.lesson_date - relativedelta(days = 1)
+            )
         )
         total_lesson_time_include_this = total_lesson_time_exclude_this + self.time
 
