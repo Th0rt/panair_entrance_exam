@@ -24,7 +24,7 @@
             <td>{{ reportline.user_sex | display_sex }}</td>
             <td>{{ reportline.lessons_count }}</td>
             <td>{{ reportline.users_count }}</td>
-            <td>¥ {{ reportline.sum_charge | intcomma }}</td>
+            <td class="text-right">¥ {{ reportline.sum_charge | intcomma }}</td>
           </tr>
         {% endfor %}
       </tbody>
@@ -47,10 +47,9 @@
             <td>{{ reportline.user_generation }} 代</td>
             <td>{{ reportline.lessons_count }}</td>
             <td>{{ reportline.users_count }}</td>
-            <td>¥ {{ reportline.sum_charge | intcomma }}</td>
+            <td class="text-right">¥ {{ reportline.sum_charge | intcomma }}</td>
           </tr>
         {% endfor %}
       </tbody>
     </table>
-  <a class="btn btn-info" href="{% url 'app:index' %}" >トップ</a>
 {% endblock content %}

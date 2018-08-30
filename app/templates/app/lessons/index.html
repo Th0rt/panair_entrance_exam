@@ -1,4 +1,5 @@
 {% extends "app/base.html" %}
+{% load staticfiles humanize helper %}
 
 {% block content %}
   {{ lessons.user.name }}
@@ -6,29 +7,29 @@
   <a class="btn btn-primary" href="{% url 'app:lessons_new' %}">新規作成</a>
   <table class="table">
     <thead>
-      <th>ID</th>
-      <th>受講者</th>
-      <th>ジャンル</th>
-      <th>受講日</th>
-      <th>受講時間</th>
-      <th>基本料金</th>
-      <th>従量料金</th>
-      <th>値引</th>
-      <th>支払い金額</th>
+      <th class="text-center">ID</th>
+      <th class="text-center">受講者</th>
+      <th class="text-center">ジャンル</th>
+      <th class="text-center">受講日</th>
+      <th class="text-center">受講時間</th>
+      <th class="text-center">基本料金</th>
+      <th class="text-center">従量料金</th>
+      <th class="text-center">値引</th>
+      <th class="text-center">支払い金額</th>
       <th></th>
     </thead>
     {% for lesson in lessons %}
       <tbody>
         <tr>
-          <td>{{ lesson.user.id }}</td>
-          <td>{{ lesson.user.name }}</td>
-          <td>{{ lesson.curriculum.name }}</td>
-          <td>{{ lesson.lesson_date|date:"Y年 n月 j日"}}</td>
-          <td>{{ lesson.time }} h</td>
-          <td>{{ lesson.basic_charge }}</td>
-          <td>{{ lesson.metered_charge }}</td>
-          <td>{{ lesson.discount }}</td>
-          <td>{{ lesson.total_charge }} 円</td>
+          <td class="text-center">{{ lesson.user.id }}</td>
+          <td class="text-center">{{ lesson.user.name }}</td>
+          <td class="text-center">{{ lesson.curriculum.name }}</td>
+          <td class="text-center">{{ lesson.lesson_date | date:"Y年 n月 j日" }}</td>
+          <td class="text-center">{{ lesson.time }} h</td>
+          <td class="text-right">¥ {{ lesson.basic_charge   | intcomma }}</td>
+          <td class="text-right">¥ {{ lesson.metered_charge | intcomma }}</td>
+          <td class="text-right">¥ {{ lesson.discount       | intcomma }}</td>
+          <td class="text-right">¥ {{ lesson.total_charge   | intcomma }}</td>
           <td><a href="{% url 'app:lessons_edit' id=lesson.id %}">編集</a></td>
         </tr>
       </tbody>

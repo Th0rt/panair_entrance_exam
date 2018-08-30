@@ -24,7 +24,7 @@
           <td>{{ invoice.user.name }}</td>
           <td>{{ invoice.curriculum_list| join:', ' }}</td>
           <td>{{ invoice.lessons.count }}</td>
-          <td>¥ {{ invoice.charge|intcomma }}</td>
+          <td class="text-right">¥ {{ invoice.charge|intcomma }}</td>
         </tr>
       </tbody>
     {% endfor %}
