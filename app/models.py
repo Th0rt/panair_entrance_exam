@@ -116,18 +116,10 @@ class Lesson(models.Model):
             MaxValueValidator(12)
         ]
     )
-    charge = models.IntegerField(
-        verbose_name = '料金',
-        null         = True
-    )
     created_at = models.DateTimeField(
         verbose_name = '作成日',
         default      = timezone.now
     )
-
-    def save(self):
-        self.charge = self.total_charge
-        super(Lesson, self).save()
 
     @property
     def total_charge(self):
