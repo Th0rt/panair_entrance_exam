@@ -95,7 +95,7 @@ def reports_index(request, year, month):
                 report_obj = Report(
                     curriculum__id     = curriculum.id,
                     user__sex          = i,
-                    user__generation   = generation,
+                    user__age__range   = (generation, generation + 9),
                     lesson_date__year  = year,
                     lesson_date__month = month
                 )

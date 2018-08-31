@@ -72,10 +72,6 @@ class User(models.Model):
     age = models.IntegerField(
         verbose_name = '年齢'
     )
-    generation  = models.IntegerField(
-        verbose_name = '年代',
-        null         = True
-    )
     sex = models.IntegerField(
         verbose_name = '性別',
         choices      = ((1, '男性'), (2, '女性')),
@@ -93,13 +89,6 @@ class User(models.Model):
 
     def __str__(self):
         return self.name
-
-    def save(self):
-        self.generation = self.calc_generation()
-        super(User, self).save()
-
-    def calc_generation(self):
-        return math.floor(self.age / 10) * 10
 
     def total_lesson_time(self, **kwargs):
         lessons = self.lesson_set.filter(**kwargs)
